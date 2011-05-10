@@ -1,6 +1,6 @@
 
 SETUP_INFO = dict(
-    name = 'infinidat.git_version_tag',
+    name = 'infinidat.git-version-tag',
 
     url = 'http://www.infinidat.com',
     license = 'PSF',
