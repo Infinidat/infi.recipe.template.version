@@ -1,11 +1,8 @@
 __import__("pkg_resources").declare_namespace(__name__)
 
-import os
-from os import path
-import shlex
-
 def run_cmd(cmd, return_stderr = False):
     from subprocess import Popen, PIPE
+    import shlex
     p = Popen(shlex.split(cmd, posix = True), stdout = PIPE, stderr = PIPE if return_stderr else None)
     p.wait()
     stdout = p.stdout.read()
