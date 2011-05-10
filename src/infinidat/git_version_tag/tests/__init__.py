@@ -49,9 +49,8 @@ class VersionInfoTestCase(unittest.TestCase):
         from os import system
         system('git init .')
         system('git commit --allow-empty -m empty')
-        version = GitFlow().head.version_tag
-        self.assertEquals(version, '')
-        
+        self.assertRaises(OSError, getattr, *[GitFlow().head, 'version_tag'])
+
     def test_vesion_tag_simple(self):
         from os import system
         system('git init .')
@@ -59,7 +58,7 @@ class VersionInfoTestCase(unittest.TestCase):
         system('git tag -a v0.0.1 -m tag')
         version = GitFlow().head.version_tag
         self.assertEquals(version, 'v0.0.1')
-        
+
     def test_vesion_tag_longer(self):
         from os import system
         system('git init .')
@@ -103,6 +102,19 @@ class VersionInfoTestCase(unittest.TestCase):
         self.assertTrue('v0.0.alpha-2' in version)
         self.assertEquals(version, 'v0.0.alpha-2-g%s' % GitFlow().head.hash[:7])
 
+    def test_vesion_tag_in_no_branch(self):
+        from os import system
+        system('git init .')
+        system('git flow init -fd')
+        system('git flow release start v0.0')
+        system('git commit --allow-empty -m empty')
+        system('git tag -a v0.0.alpha -m tag')
+        system('git commit --allow-empty -m empty')
+        system('git commit --allow-empty -m empty')
+        system('git checkout v0.0.alpha')
+        version = GitFlow().head.version_tag
+        self.assertEquals(version, 'v0.0.alpha')
+
     def test_git_commit_attributes(self):
         from os import system
         system('git init .')
@@ -112,4 +124,3 @@ class VersionInfoTestCase(unittest.TestCase):
         email = GitFlow().head.email
         self.assertEquals(run_cmd('git config --get user.name')[1].splitlines()[0].strip(), name)
         self.assertEquals(run_cmd('git config --get user.email')[1].splitlines()[0].strip(), email)
-        
