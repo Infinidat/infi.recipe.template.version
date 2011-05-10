@@ -31,17 +31,24 @@ class Commit(object):
         if 'master' in stripped_branch:
             return self.describe
         else:
-            return self._describe_match(stripped_branch)
+            try:
+                return self._describe_match(stripped_branch)
+            except OSError:
+                pass
+            return self.describe
 
     def _describe_match(self, match):
         commandline = 'git describe %s --tags --match "*%s*"' % (self._ref, match)
-        rc, out = run_cmd(commandline)
+        rc, out,err = run_cmd(commandline, True)
+        if 'fatal' in err.lower():
+            raise OSError("git tag not found")
         return strip(out)
-
     @property
     def describe(self):
         commandline = 'git describe %s --tags' % self._ref
-        rc, out = run_cmd(commandline)
+        rc, out,err = run_cmd(commandline, True)
+        if 'fatal' in err.lower():
+            raise OSError("git tag not found")
         return strip(out)
 
     @property
