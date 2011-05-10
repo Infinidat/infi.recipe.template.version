@@ -9,6 +9,7 @@
 *.EGG-INFO
 .coverage
 .settings
+__VERSION__.py
 
 # eclipse
 .project
