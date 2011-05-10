@@ -4,11 +4,14 @@ import os
 from os import path
 import shlex
 
-def run_cmd(cmd):
+def run_cmd(cmd, return_stderr = False):
     from subprocess import Popen, PIPE
-    p = Popen(shlex.split(cmd, posix=True), stdout=PIPE, stderr=None)
+    p = Popen(shlex.split(cmd, posix = True), stdout = PIPE, stderr = PIPE if return_stderr else None)
     p.wait()
     stdout = p.stdout.read()
+    if return_stderr:
+        stderr = p.stderr.read()
+        return (p.returncode, stdout, stderr)
     return (p.returncode, stdout)
 
 def strip(string):
@@ -23,7 +26,13 @@ class Commit(object):
     def version_tag(self):
         current_branch = self.branches[0]
         stripped_branch = current_branch.split('/')[0]
-        commandline = 'git describe %s --tags --match "*%s*"' % stripped_branch
+        if 'master' in stripped_branch:
+            return self.describe
+        else:
+            return self._describe_match(stripped_branch)
+
+    def _describe_match(self, match):
+        commandline = 'git describe %s --tags --match "*%s*"' % (self._ref, match)
         rc, out = run_cmd(commandline)
         return strip(out)
 
@@ -35,15 +44,27 @@ class Commit(object):
 
     @property
     def date(self):
-        commandline = 'git show %s --no-color --pretty=format:"%ai"' % self._ref
+        commandline = 'git show %s %s' % (self._ref, '--no-color --pretty=format:"%ai"')
         rc, out = run_cmd(commandline)
-        return strip(out)
+        return out.splitlines()[0].strip().strip('"')
 
     @property
-    def head_commit_hash(self):
-        commandline = 'git show %s --no-color --pretty=format:"%H"' % self._ref
+    def hash(self):
+        commandline = 'git show %s %s' % (self._ref, '--no-color --pretty=format:"%H"')
         rc, out = run_cmd(commandline)
-        return strip(out)
+        return out.splitlines()[0].strip().strip('"')
+
+    @property
+    def name(self):
+        commandline = 'git show %s %s' % (self._ref, '--no-color --pretty=format:"%an"')
+        rc, out = run_cmd(commandline)
+        return out.splitlines()[0].strip().strip('"')
+
+    @property
+    def email(self):
+        commandline = 'git show %s %s' % (self._ref, '--no-color --pretty=format:"%ae"')
+        rc, out = run_cmd(commandline)
+        return out.splitlines()[0].strip().strip('"')
 
     @property
     def branches(self):
@@ -51,13 +72,16 @@ class Commit(object):
         this method assumes the commit exists in the current branch
         which is placed first in the list
         """
-        commandline = 'git branch --no-color --contains %s' % self._def
+        commandline = 'git branch --no-color --contains %s' % self._ref
         rc, out = run_cmd(commandline)
         branches = out.splitlines()
         branches = Commit._move_starred_branch_to_top(branches)
+        return branches
 
     @classmethod
     def _move_starred_branch_to_top(cls, branches):
+        from copy import copy
+        branches = copy(branches)
         starred_branch_names = filter(lambda x: x.startswith("* "), branches)
 
         if not starred_branch_names:
@@ -70,6 +94,10 @@ class Commit(object):
 
 class GitFlow(object):
     def __init__(self):
+        command = 'git show'
+        rc, out, err = run_cmd(command, True)
+        if 'fatal' in err.lower():
+            raise OSError("not a git repository or a bare repository")
 
     @property
     def head(self):
