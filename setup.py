@@ -1,9 +1,8 @@
 
 SETUP_INFO = dict(
-    name = 'infinidat.host.version_info',
+    name = 'infinidat.git_version_tag',
 
     url = 'http://www.infinidat.com',
-    keywords = '',
     license = 'PSF',
     description = 'simple interface in Python to get version tags out of git describe',
     long_description = ('simple interface in Python to get version tags out of git describe'),
@@ -22,19 +21,7 @@ SETUP_INFO = dict(
     # We use namespaced packages so we must require setuptools
     install_requires = ['setuptools'],
 
-    # A dictionary mapping names of "extras" (optional features of your project) to strings or lists of strings specifying what
-    # other distributions must be installed to support those features.
-    extras_require = {},
-
-    # A string or list of strings specifying what other distributions need to be present in order for the setup script to run.
-    setup_requires = '',
-
-    test_suite = '',
-    tests_require = {},
-
-    dependency_links = [],
-
-    namespace_packages = ['infinidat', 'infinidat.host'],
+    namespace_packages = ['infinidat'],
 
     # packages = find_packages('src'),
     package_dir = {'': 'src'},
@@ -44,7 +31,6 @@ SETUP_INFO = dict(
     entry_points = dict(
         console_scripts = [],
         gui_scripts = [])
-
     )
 
 def setup():
@@ -53,7 +39,7 @@ def setup():
 
     from setuptools import setup as _setup
     from setuptools import find_packages
-    from infinidat.host.version_info import GitFlow
+    from infinidat.git_version_tag import GitFlow
     head = GitFlow().head
     SETUP_INFO['packages'] = find_packages('src')
     SETUP_INFO['version'] = head.version_tag.lstrip('v')
