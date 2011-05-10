@@ -2,7 +2,7 @@ __import__("pkg_resources").declare_namespace(__name__)
 
 import unittest
 from mock import patch
-from .. import GitFlow, Commit, run_cmd
+from ..git import GitFlow, Commit, run_cmd
 
 class VersionInfoTestCase(unittest.TestCase):
     def setUp(self):
