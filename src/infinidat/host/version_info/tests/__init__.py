@@ -52,7 +52,7 @@ class VersionInfoTestCase(unittest.TestCase):
         version = GitFlow().head.version_tag
         self.assertEquals(version, '')
         
-    def test_vesion_tag_1(self):
+    def test_vesion_tag_simple(self):
         from os import system
         system('git init .')
         system('git commit --allow-empty -m empty')
@@ -60,7 +60,7 @@ class VersionInfoTestCase(unittest.TestCase):
         version = GitFlow().head.version_tag
         self.assertEquals(version, 'v0.0.1')
         
-    def test_vesion_tag_2(self):
+    def test_vesion_tag_longer(self):
         from os import system
         system('git init .')
         system('git commit --allow-empty -m empty')
@@ -72,7 +72,7 @@ class VersionInfoTestCase(unittest.TestCase):
         self.assertTrue('v0.0.1-3' in version)
         self.assertEquals(version, 'v0.0.1-3-g%s' % GitFlow().head.hash[:7])
 
-    def test_vesion_tag_3(self):
+    def test_vesion_tag_in_feature_branch(self):
         from os import system
         system('git init .')
         system('git flow init -fd')
@@ -89,6 +89,19 @@ class VersionInfoTestCase(unittest.TestCase):
         version = GitFlow().head.version_tag
         self.assertTrue('v0.0-feature1-3' in version)
         self.assertEquals(version, 'v0.0-feature1-3-g%s' % GitFlow().head.hash[:7])
+
+    def test_vesion_tag_in_release_branch(self):
+        from os import system
+        system('git init .')
+        system('git flow init -fd')
+        system('git flow release start v0.0')
+        system('git commit --allow-empty -m empty')
+        system('git tag -a v0.0.alpha -m tag')
+        system('git commit --allow-empty -m empty')
+        system('git commit --allow-empty -m empty')
+        version = GitFlow().head.version_tag
+        self.assertTrue('v0.0.alpha-2' in version)
+        self.assertEquals(version, 'v0.0.alpha-2-g%s' % GitFlow().head.hash[:7])
 
     def test_git_commit_attributes(self):
         from os import system

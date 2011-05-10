@@ -26,6 +26,8 @@ class Commit(object):
     def version_tag(self):
         current_branch = self.branches[0]
         stripped_branch = current_branch.split('/')[0]
+        if current_branch.startswith('release/') or current_branch.startswith('support/') or current_branch.startswith('hotfix/'):
+            return self.describe  
         if 'master' in stripped_branch:
             return self.describe
         else:
