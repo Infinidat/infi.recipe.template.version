@@ -1,11 +1,11 @@
 __import__("pkg_resources").declare_namespace(__name__)
 
-from template import Recipe as _Recipe
+import collective.recipe.template
 
-class Recipe(_Recipe):
+class Recipe(collective.recipe.template.Recipe):
     def __init__(self, buildout, name, options):
         Recipe.update_buildout_data(buildout)
-        _Recipe.__init__(self, buildout, name, options)
+        collective.recipe.template.Recipe.__init__(self, buildout, name, options)
         
     @classmethod
     def update_buildout_data(cls, buildout):

@@ -1,7 +1,7 @@
 
 SETUP_INFO = dict(
     name = 'infinidat.host.recipe.version',
-    version = '0.1.4',
+    version = '0.1.5',
     author = 'Guy Rozendorn',
     author_email = 'guy@rzn.co.il',
 
@@ -22,7 +22,7 @@ SETUP_INFO = dict(
 
     # A string or list of strings specifying what other distributions need to be installed when this one is
     # We use namespaced packages so we must require setuptools
-    install_requires = ['setuptools', 'zc.buildout'],
+    install_requires = ['setuptools', 'zc.buildout', 'collective.recipe.template'],
 
     namespace_packages = ['infinidat', 'infinidat.host', 'infinidat.host.recipe'],
 
