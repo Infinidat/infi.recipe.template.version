@@ -34,6 +34,8 @@ SETUP_INFO = dict(
     entry_points = """
     [zc.buildout]
     default = infinidat.host.recipe.version:Recipe
+    setup.py = infinidat.host.recipe.version:SetupPyRecipe
+    __version__.py = infinidat.host.recipe.version:VersionPyRecipe
     """
     )
 
