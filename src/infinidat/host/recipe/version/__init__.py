@@ -48,7 +48,7 @@ class SetupPyRecipe(Recipe):
         data['input'] = '${buildout:directory}/setup.in'
         data['output'] = '${buildout:directory}/setup.py'
         return Recipe.update_options_with_new_data(buildout, options, data)
-        
+
 class VersionPyRecipe(Recipe):
     """
     see Recipe class.
@@ -63,7 +63,7 @@ class VersionPyRecipe(Recipe):
     def get_options_with_input_and_output(cls, buildout, options):
         data = {}
         data['inline'] = '\n'.join(["""__import__("pkg_resources").declare_namespace(__name__)""",
-                                    """version = '${infinidat.host.recipe.version:version}"""])
+                                    """version = '${infinidat.host.recipe.version:version}'"""])
         data['output'] = '${project:VERSION_FILE}'
         return Recipe.update_options_with_new_data(buildout, options, data)
-        
+
