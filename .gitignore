@@ -11,7 +11,7 @@ setup.py
 *.EGG-INFO
 .coverage
 .settings
-.gitignore
+.gitconfig
 __VERSION__.py
 
 # eclipse
