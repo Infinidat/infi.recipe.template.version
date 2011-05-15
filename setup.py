@@ -1,14 +1,20 @@
 
 SETUP_INFO = dict(
     name = 'infi.recipe.template.version',
-    version = '0.1.6-develop-7-g0f99f0f',
+    version = '0.1.6-develop-11-g55c8a8c',
     author = 'Guy Rozendorn',
     author_email = 'guy@rzn.co.il',
 
     url = 'http://www.infinidat.com',
     license = 'PSF',
-    description = ,
-    long_description = (),
+    description = 'an extension to collective.recipe.template',
+    long_description = ("""this extends collective.recipe.template by adding adding a new section:
+[infi.recipe.template.version],
+version = <git describe>.strip("v"),
+author = <git head commit author>,
+author_email = <git head commit author email>,
+,
+with this, you can inject the version into setup.py and modules"""),
 
     # http://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers = [
