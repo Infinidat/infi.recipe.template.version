@@ -1,14 +1,14 @@
 
 SETUP_INFO = dict(
-    name = 'infinidat.host.recipe.version',
-    version = '0.1.5',
+    name = 'infi.recipe.template.version',
+    version = '0.1.6-develop-7-g0f99f0f',
     author = 'Guy Rozendorn',
     author_email = 'guy@rzn.co.il',
 
     url = 'http://www.infinidat.com',
     license = 'PSF',
-    description = 'simple interface in Python to get version tags out of git describe',
-    long_description = ('simple interface in Python to get version tags out of git describe'),
+    description = ,
+    long_description = (),
 
     # http://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers = [
@@ -24,7 +24,7 @@ SETUP_INFO = dict(
     # We use namespaced packages so we must require setuptools
     install_requires = ['setuptools', 'zc.buildout', 'collective.recipe.template'],
 
-    namespace_packages = ['infinidat', 'infinidat.host', 'infinidat.host.recipe'],
+    namespace_packages = ['infi', 'infi.recipe', 'infi.recipe.template'],
 
     # packages = find_packages('src'),
     package_dir = {'': 'src'},
@@ -33,7 +33,7 @@ SETUP_INFO = dict(
 
     entry_points = """
     [zc.buildout]
-    default = infinidat.host.recipe.version:Recipe
+    default = infi.recipe.template.version.recipe:Recipe
     """
     )
 

@@ -1,14 +1,14 @@
 
 SETUP_INFO = dict(
     name = '${project:name}',
-    version = '${infinidat.host.recipe.version:version}',
-    author = '${infinidat.host.recipe.version:author}',
-    author_email = '${infinidat.host.recipe.version:author_email}',
+    version = '${infi.recipe.template.version:version}',
+    author = '${infi.recipe.template.version:author}',
+    author_email = '${infi.recipe.template.version:author_email}',
 
     url = 'http://www.infinidat.com',
     license = 'PSF',
-    description = 'simple interface in Python to get version tags out of git describe',
-    long_description = ('simple interface in Python to get version tags out of git describe'),
+    description = ${project:description},
+    long_description = (${project:long_description}),
 
     # http://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers = [
@@ -33,9 +33,7 @@ SETUP_INFO = dict(
 
     entry_points = """
     [zc.buildout]
-    default = infinidat.host.recipe.version:Recipe
-    setup.py = infinidat.host.recipe.version:SetupPyRecipe
-    __version__.py = infinidat.host.recipe.version:VersionPyRecipe
+    default = infi.recipe.template.version.recipe:Recipe
     """
     )
 
