@@ -1,3 +1,5 @@
+src/infi/recipe/template/version/__init__.py
+setup.py
 
 # generic
 *.tmp
