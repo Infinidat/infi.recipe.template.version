@@ -1,9 +1,9 @@
 
 SETUP_INFO = dict(
     name = 'infi.recipe.template.version',
-    version = '0.2-develop',
+    version = '0.2-develop-1-g5d7dba0',
     author = 'Guy Rozendorn',
-    author_email = 'guy@rzn.co.il',
+    author_email = 'guyr@infinidat.com',
 
     license = 'BSD',
     description = 'an extension to collective.recipe.template',
