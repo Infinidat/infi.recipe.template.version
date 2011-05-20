@@ -23,6 +23,11 @@ class Recipe(collective.recipe.template.Recipe):
         collective.recipe.template.Recipe.__init__(self, buildout, name, options)
 
     @classmethod
+    def get_commit_describe(commit, match_pattern='\*'):
+        cmd = 'git describe --tags --match %s %s' % (match_pattern, commit)
+        return commit.repo._executeGitCommandAssertSuccess(cmd).stdout.read().strip()
+
+    @classmethod
     def extract_version_tag(cls):
         from git import LocalRepository
         from os import curdir, path
@@ -30,20 +35,20 @@ class Recipe(collective.recipe.template.Recipe):
         branch = repository.getCurrentBranch()
         head = repository.getHead()
         if branch is None:
-            return head.getDescribe()
+            return cls.get_commit_describe(head)
         current_branch = branch.name
         stripped_branch = current_branch.split('/')[0]
         if current_branch.startswith('release/') or current_branch.startswith('support/') or \
                                                     current_branch.startswith('hotfix/'):
-            return head.getDescribe()
+            return cls.get_commit_describe(head)
         if 'master' in stripped_branch:
-            return head.getDescribe()
+            return cls.get_commit_describe(head)
         else:
             try:
-                return head.getDescribe('\*%s\*' % stripped_branch)
+                return cls.get_commit_describe(head, '\*%s\*' % stripped_branch)
             except:
                 pass
-            return head.getDescribe()
+            return  cls.get_commit_describe(head)
         pass
 
     @classmethod
