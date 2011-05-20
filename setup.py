@@ -1,7 +1,7 @@
 
 SETUP_INFO = dict(
     name = 'infi.recipe.template.version',
-    version = '0.2-develop-1-g5d7dba0',
+    version = '0.2-develop-2-g52ac2ea',
     author = 'Guy Rozendorn',
     author_email = 'guyr@infinidat.com',
 
