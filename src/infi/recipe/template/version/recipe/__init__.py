@@ -23,7 +23,7 @@ class Recipe(collective.recipe.template.Recipe):
         collective.recipe.template.Recipe.__init__(self, buildout, name, options)
 
     @classmethod
-    def get_commit_describe(commit, match_pattern='\*'):
+    def get_commit_describe(cls, commit, match_pattern='v\*'):
         cmd = 'git describe --tags --match %s %s' % (match_pattern, commit)
         return commit.repo._executeGitCommandAssertSuccess(cmd).stdout.read().strip()
 
@@ -45,7 +45,7 @@ class Recipe(collective.recipe.template.Recipe):
             return cls.get_commit_describe(head)
         else:
             try:
-                return cls.get_commit_describe(head, '\*%s\*' % stripped_branch)
+                return cls.get_commit_describe(head, 'v\*%s\*' % stripped_branch)
             except:
                 pass
             return  cls.get_commit_describe(head)
