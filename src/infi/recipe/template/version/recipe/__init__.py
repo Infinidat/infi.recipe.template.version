@@ -23,12 +23,39 @@ class Recipe(collective.recipe.template.Recipe):
         collective.recipe.template.Recipe.__init__(self, buildout, name, options)
 
     @classmethod
+    def extract_version_tag(cls):
+        from git import LocalRepository
+        from os import curdir, path
+        repository = LocalRepository(curdir)
+        branch = repository.getCurrentBranch()
+        head = repository.getHead()
+        if branch is None:
+            return head.getDescribe()
+        current_branch = branch.name
+        stripped_branch = current_branch.split('/')[0]
+        if current_branch.startswith('release/') or current_branch.startswith('support/') or \
+                                                    current_branch.startswith('hotfix/'):
+            return head.getDescribe()
+        if 'master' in stripped_branch:
+            return head.getDescribe()
+        else:
+            try:
+                return head.getDescribe('\*%s\*' % stripped_branch)
+            except:
+                pass
+            return head.getDescribe()
+        pass
+
+    @classmethod
     def update_buildout_data(cls, buildout):
-        from ..git import GitFlow
+        import git
+        from os import curdir
+        repository = git.LocalRepository(curdir)
+        branch = repository.getCurrentBranch()
+        head = repository.getHead()
+        head = git.LocalRepository(curdir)
         from zc.buildout.buildout import Options
-        data = {}
-        head = GitFlow().head
-        data['version'] = head.version_tag.lstrip('v')
-        data['author'] = head.name
-        data['author_email'] = head.email
+        data['version'] = cls.extract_version_tag().lstrip('v')
+        data['author'] = head.getAuthorName()
+        data['author_email'] = head.getAuthorEmail()
         buildout._data.update({SECTION_NAME: Options(buildout, SECTION_NAME, data)})
