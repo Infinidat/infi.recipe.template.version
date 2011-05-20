@@ -53,8 +53,8 @@ class Recipe(collective.recipe.template.Recipe):
         repository = git.LocalRepository(curdir)
         branch = repository.getCurrentBranch()
         head = repository.getHead()
-        head = git.LocalRepository(curdir)
         from zc.buildout.buildout import Options
+        data = {}
         data['version'] = cls.extract_version_tag().lstrip('v')
         data['author'] = head.getAuthorName()
         data['author_email'] = head.getAuthorEmail()
