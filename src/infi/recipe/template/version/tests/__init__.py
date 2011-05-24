@@ -95,3 +95,17 @@ class VersionInfoTestCase(unittest.TestCase):
         version = Recipe.extract_version_tag()
         self.assertEquals(version, 'v0.0.alpha')
 
+    def test_verison_tag_with_non_version_tag_outside_of_branch(self):
+        from os import system
+        system('git init .')
+        system('git flow init -fd')
+        system('git flow release start v0.0')
+        system('git commit --allow-empty -m empty')
+        system('git tag -a v0.0.alpha -m tag')
+        system('git commit --allow-empty -m empty')
+        system('git commit --allow-empty -m empty')
+        system('git checkout HEAD^')
+        system('git tag -a foo -m foo')
+        version = Recipe.extract_version_tag()
+        self.assertTrue('v0.0.alpha' in version)
+
