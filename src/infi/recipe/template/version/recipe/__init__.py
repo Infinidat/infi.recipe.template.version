@@ -38,18 +38,7 @@ class Recipe(collective.recipe.template.Recipe):
             return cls.get_commit_describe(head)
         current_branch = branch.name
         stripped_branch = current_branch.split('/')[0]
-        if current_branch.startswith('release/') or current_branch.startswith('support/') or \
-                                                    current_branch.startswith('hotfix/'):
-            return cls.get_commit_describe(head)
-        if 'master' in stripped_branch:
-            return cls.get_commit_describe(head)
-        else:
-            try:
-                return cls.get_commit_describe(head, 'v*%s*' % stripped_branch)
-            except:
-                pass
-            return  cls.get_commit_describe(head)
-        pass
+        return cls.get_commit_describe(head)
 
     @classmethod
     def update_buildout_data(cls, buildout):
