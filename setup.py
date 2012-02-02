@@ -26,7 +26,7 @@ with this, you can inject the version into setup.py and modules"""),
 
     # A string or list of strings specifying what other distributions need to be installed when this one is
     # We use namespaced packages so we must require setuptools
-    install_requires = ['setuptools', 'zc.buildout', 'collective.recipe.template', 'gitpy'],
+    install_requires = ['distribute', 'zc.buildout', 'collective.recipe.template', 'gitpy'],
 
     namespace_packages = ['infi', 'infi.recipe', 'infi.recipe.template'],
 
