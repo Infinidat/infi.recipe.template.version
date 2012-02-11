@@ -61,14 +61,15 @@ class Recipe(collective.recipe.template.Recipe):
         head = repository.getHead()
         from zc.buildout.buildout import Options
         data = {}
-        data['version'] = cls.extract_version_tag().lstrip('v')
-        data['author'] = head.getAuthorName()
-        data['author_email'] = head.getAuthorEmail()
-        data['git_local_branch'] = branch.name if branch is not None else '(Not currently on any branch)'
-        data['git_remote_tracking_branch'] = remote.getNormalizedName() if remote is not None else '(No remote tracking)'
-        data['git_remote_url'] = remote.remote.url if remote is not None else '(Not remote tracking)'
-        data['head_subject'] = head.getSubject()
-        data['head_message'] = head.getMessageBody()
-        data['dirty_diff'] = repository._getOutputAssertSuccess("git diff --raw")
+        data['version'] = repr(cls.extract_version_tag().lstrip('v'))
+        data['author'] = repr(head.getAuthorName())
+        data['author_email'] = repr(head.getAuthorEmail())
+        data['git_local_branch'] = repr(branch.name if branch is not None else '(Not currently on any branch)')
+        data['git_remote_tracking_branch'] = repr(remote.getNormalizedName() if remote is not None else '(No remote tracking)')
+        data['git_remote_url'] = repr(remote.remote.url if remote is not None else '(Not remote tracking)')
+        data['head_subject'] = repr(head.getSubject())
+        data['head_message'] = repr(head.getMessageBody())
+        data['head_hash'] = repr(head.hash)
+        data['dirty_diff'] = repr(repository._getOutputAssertSuccess("git diff --patch --no-color"))
         buildout._data.update({SECTION_NAME: Options(buildout, SECTION_NAME, data)})
 
