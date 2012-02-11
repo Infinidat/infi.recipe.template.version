@@ -68,5 +68,6 @@ class Recipe(collective.recipe.template.Recipe):
         data['git_remote_tracking_branch'] = remote.getNormalizedName() if remote is not None else '(No remote tracking)'
         data['git_remote_url'] = remote.remote.url if remote is not None else '(Not remote tracking)'
         data['head_hash'] = head.hash
+        data['dirty_diff'] = repository._getOutputAssertSuccess("git diff --raw").strip(' \n') != ''
         buildout._data.update({SECTION_NAME: Options(buildout, SECTION_NAME, data)})
 
