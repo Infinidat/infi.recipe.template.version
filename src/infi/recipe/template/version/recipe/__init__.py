@@ -6,6 +6,7 @@ import os
 import re
 import stat
 import zc.buildout
+from infi.execute import execute_async
 
 import collective.recipe.template
 
@@ -70,6 +71,8 @@ class Recipe(collective.recipe.template.Recipe):
         data['head_subject'] = repr(head.getSubject())
         data['head_message'] = repr(head.getMessageBody())
         data['head_hash'] = repr(head.hash)
-        data['dirty_diff'] = repr(repository._getOutputAssertSuccess("git diff --patch --no-color"))
+        diff = execute_async("git diff --patch --no-color", shell=True)
+        diff.wait()
+        data['dirty_diff'] = repr(diff.get_stdout().replace('${', '$\\{'))
         buildout._data.update({SECTION_NAME: Options(buildout, SECTION_NAME, data)})
 
