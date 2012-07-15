@@ -42,7 +42,7 @@ class VersionInfoTestCase(unittest.TestCase):
 
     def test_vesion_tag_longer(self):
         from os import system
-        from git import LocalRepository
+        from gitpy import LocalRepository
         system('git init .')
         system('git commit --allow-empty -m empty')
         system('git tag -a v0.0.1 -m tag')

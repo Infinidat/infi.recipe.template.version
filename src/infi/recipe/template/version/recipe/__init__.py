@@ -30,7 +30,7 @@ class Recipe(collective.recipe.template.Recipe):
 
     @classmethod
     def extract_version_tag(cls):
-        from git import LocalRepository
+        from gitpy import LocalRepository
         from os import curdir, path
         repository = LocalRepository(curdir)
         branch = repository.getCurrentBranch()
@@ -54,9 +54,9 @@ class Recipe(collective.recipe.template.Recipe):
 
     @classmethod
     def update_buildout_data(cls, buildout):
-        import git
+        import gitpy
         from os import curdir
-        repository = git.LocalRepository(curdir)
+        repository = gitpy.LocalRepository(curdir)
         branch = repository.getCurrentBranch()
         remote = branch.getRemoteBranch() if branch is not None else None
         head = repository.getHead()
