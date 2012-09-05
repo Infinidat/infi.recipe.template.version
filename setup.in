@@ -5,9 +5,10 @@ SETUP_INFO = dict(
     author = '${infi.recipe.template.version:author}',
     author_email = '${infi.recipe.template.version:author_email}',
 
-    license = 'BSD',
-    description = ${project:description},
-    long_description = (${project:long_description}),
+    url = 'http://www.infinidat.com',
+    license = 'PSF',
+    description = """${project:description}""",
+    long_description = """${project:long_description}""",
 
     # http://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers = [
@@ -19,14 +20,11 @@ SETUP_INFO = dict(
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
 
-    # A string or list of strings specifying what other distributions need to be installed when this one is
-    # We use namespaced packages so we must require setuptools
-    install_requires = [${project:install_requires}],
+    install_requires = ${project:install_requires},
+    namespace_packages = ${project:namespace_packages},
 
-    namespace_packages = [${project:namespace_packages}],
-
-    # packages = find_packages('src'),
     package_dir = {'': 'src'},
+    package_data = {'': ${project:package_data}},
     include_package_data = True,
     zip_safe = False,
 
