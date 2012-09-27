@@ -58,7 +58,10 @@ class Recipe(collective.recipe.template.Recipe):
         from os import curdir
         repository = gitpy.LocalRepository(curdir)
         branch = repository.getCurrentBranch()
-        remote = branch.getRemoteBranch() if branch is not None else None
+        try:
+            remote = branch.getRemoteBranch() if branch is not None else None
+        except gitpy.exceptions.NonexistentRefException:
+            remote = None
         head = repository.getHead()
         from zc.buildout.buildout import Options
         data = {}
