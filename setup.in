@@ -34,6 +34,9 @@ SETUP_INFO = dict(
     """
     )
 
+if SETUP_INFO['url'] is None:
+    _ = SETUP_INFO.pop('url')
+
 def setup():
     from setuptools import setup as _setup
     from setuptools import find_packages

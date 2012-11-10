@@ -7,7 +7,18 @@ So, we have this buildout recipe, which inherits from collective.recipe.template
     [infi.recipe.template.version]
     version = <git describe>.strip('v')
     author = <git head commit author>
-    author_email = <git head commit author email> """
+    author_email = <git head commit author email>
+    homepage = <see description below>
+
+The home deduction is being done in the following order:
+
+* The value of option `homepage` in section `project` in the `buildout.cfg` file
+* The url of git remote `origin` is being parsed, and attempted to be translated into a browser-friendly url
+* As a last resort, a None value is set
+
+For example:
+
+* `git://github.com/Infinidat/infi.recipe.template.version.git` is translated to `https://github.com/Infinidat/infi.recipe.template.version`
 
 Usage
 =====
@@ -28,14 +39,11 @@ Here's an example for a buildout.cfg file that uses this recipe:
 Checking out the code
 =====================
 
-This project uses buildout, and git to generate setup.py and __version__.py.
-In order to generate these, run:
+This project uses buildout and infi-projector, and git to generate setup.py and __version__.py.
+In order to generate these, first get infi-projector:
 
-    python -S bootstrap.py -d -t
-    bin/buildout -c buildout-version.cfg
-    python setup.py develop
+    easy_install infi.projector
 
-In our development environment, we use isolated python builds, by running the following instead of the last command:
+    and then run in the project directory:
 
-    bin/buildout install development-scripts
-
+        projector devenv build

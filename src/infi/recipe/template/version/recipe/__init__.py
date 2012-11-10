@@ -12,21 +12,15 @@ import collective.recipe.template
 
 SECTION_NAME = "infi.recipe.template.version"
 
-class Recipe(collective.recipe.template.Recipe):
-    """ This recipe extends collective.recipe.template by adding adding a new section
-    [infi.recipe.template.version]
-    version = <git describe>.strip('v')
-    author = <git head commit author>
-    author_email = <git head commit author email> """
-
-    def __init__(self, buildout, name, options):
-        Recipe.update_buildout_data(buildout)
-        collective.recipe.template.Recipe.__init__(self, buildout, name, options)
-
+class GitMixin(object):
     @classmethod
     def get_commit_describe(cls, commit, match_pattern='v*'):
-        cmd = 'git describe --tags --match %s %s' % (match_pattern, commit)
-        return commit.repo._executeGitCommandAssertSuccess(cmd).stdout.read().strip()
+        from gitpy.exceptions import GitCommandFailedException
+        try:
+            cmd = 'git describe --tags --match %s %s' % (match_pattern, commit)
+            return commit.repo._executeGitCommandAssertSuccess(cmd).stdout.read().strip()
+        except GitCommandFailedException:
+            return commit.repo._executeGitCommandAssertSuccess(cmd.replace('*', '\*')).stdout.read().strip()
 
     @classmethod
     def extract_version_tag(cls):
@@ -53,10 +47,62 @@ class Recipe(collective.recipe.template.Recipe):
         pass
 
     @classmethod
-    def update_buildout_data(cls, buildout):
+    def get_origin(cls, repository):
+        from gitpy.exceptions import NonexistentRefException
+        try:
+            return repository.getRemoteByName("origin")
+        except NonexistentRefException:
+            return None
+
+    @classmethod
+    def guess_origin_home_protocol(cls, fqdn):
+        from urllib import urlretrieve
+        try:
+            if urlretrieve("https://{0}".format(fqdn)):
+                return 'https'
+        except:
+            return 'http'
+
+    @classmethod
+    def translate_clone_url_to_homepage(cls, url):
+        from re import match
+        URL = r"(?P<protocol>(?:git@|git:\/\/))(?P<origin_fqdn>[a-zA-Z0-9_\-.]+)[:\/]{1,2}(?P<repository_uri>[a-zA-Z0-9_\-\.\/]+)(?:.git)+$"
+        if not match(URL, url):
+            return None
+        groupdict = match(URL, url).groupdict()
+        protocol = cls.guess_origin_home_protocol(groupdict['origin_fqdn'])
+        return "{0}://{1}/{2}".format(protocol, groupdict['origin_fqdn'], groupdict['repository_uri'])
+
+    @classmethod
+    def get_homepage(cls):
+        repository = cls.get_repository()
+
+        origin = cls.get_origin(repository)
+        if origin is None:
+            return None
+        return cls.translate_clone_url_to_homepage(origin.url)
+
+    @classmethod
+    def get_repository(cls):
         import gitpy
         from os import curdir
         repository = gitpy.LocalRepository(curdir)
+        return repository
+
+class Recipe(collective.recipe.template.Recipe, GitMixin):
+    """ This recipe extends collective.recipe.template by adding adding a new section
+    [infi.recipe.template.version]
+    version = <git describe>.strip('v')
+    author = <git head commit author>
+    author_email = <git head commit author email> """
+
+    def __init__(self, buildout, name, options):
+        Recipe.update_buildout_data(buildout)
+        collective.recipe.template.Recipe.__init__(self, buildout, name, options)
+
+    @classmethod
+    def update_buildout_data(cls, buildout):
+        repository = cls.get_repository()
         branch = repository.getCurrentBranch()
         try:
             remote = branch.getRemoteBranch() if branch is not None else None
@@ -77,5 +123,7 @@ class Recipe(collective.recipe.template.Recipe):
         diff = execute_async("git diff --patch --no-color", shell=True)
         diff.wait()
         data['dirty_diff'] = repr(diff.get_stdout().replace('${', '$\\{'))
+        data['homepage'] = repr(cls.get_homepage())
+        if buildout.get("project").get("homepage"):
+            data['homepage'] = repr(buildout.get("project").get("homepage"))
         buildout._data.update({SECTION_NAME: Options(buildout, SECTION_NAME, data)})
-
