@@ -15,12 +15,8 @@ SECTION_NAME = "infi.recipe.template.version"
 class GitMixin(object):
     @classmethod
     def get_commit_describe(cls, commit, match_pattern='v*'):
-        from gitpy.exceptions import GitCommandFailedException
-        try:
-            cmd = 'git describe --tags --match %s %s' % (match_pattern, commit)
-            return commit.repo._executeGitCommandAssertSuccess(cmd).stdout.read().strip()
-        except GitCommandFailedException:
-            return commit.repo._executeGitCommandAssertSuccess(cmd.replace('*', '\*')).stdout.read().strip()
+        cmd = 'git describe --tags --match %s %s' % (match_pattern, commit)
+        return commit.repo._executeGitCommandAssertSuccess(cmd).stdout.read().strip()
 
     @classmethod
     def extract_version_tag(cls):
