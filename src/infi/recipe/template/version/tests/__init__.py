@@ -13,6 +13,8 @@ TRANSLATE_URLS = {
     'git://github.com/Infinidat/infi.execute.git': 'https://github.com/Infinidat/infi.execute',
 }
 
+from logging import getLogger
+logger = getLogger(__name__)
 
 @contextmanager
 def chdir(path):
@@ -20,11 +22,13 @@ def chdir(path):
     from os import curdir, chdir
     path = abspath(path)
     current_dir = abspath(curdir)
+    logger.debug("chdir {!r}".format(path))
     chdir(path)
     try:
         yield
     finally:
         chdir(current_dir)
+        logger.debug("chdir {!r}".format(current_dir))
 
 @contextmanager
 def temporary_directory_context():
@@ -152,7 +156,7 @@ class HomepageRealTestCase(unittest.TestCase):
                 fd.write(setup_in.replace("url = 'http://www.infinidat.com'",
                                           "url = ${infi.recipe.template.version:homepage}"))
             yield
-            system("projector devenv build --no-scripts --use-isolated-python")
+            system("projector devenv build --no-scripts")
             with open("setup.py") as fd:
                 actual_homepath = "url = {0},".format(None if expected_homepage is None else repr(expected_homepage))
                 self.assertIn(actual_homepath, fd.read())
