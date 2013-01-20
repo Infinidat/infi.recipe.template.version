@@ -102,6 +102,7 @@ class Recipe(collective.recipe.template.Recipe, GitMixin):
 
     @classmethod
     def update_buildout_data(cls, buildout):
+        import gitpy
         repository = cls.get_repository()
         branch = repository.getCurrentBranch()
         try:
