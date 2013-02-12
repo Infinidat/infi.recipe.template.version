@@ -7,8 +7,8 @@ from ..recipe import Recipe, GitMixin
 from os import system
 
 TRANSLATE_URLS = {
-    'git@gitserver:/host/recipe-template-version.git': 'http://gitserver/host/recipe-template-version',
-    'git://gitserver/qa/tests.git': 'http://gitserver/qa/tests',
+    'git@gitserver:/host/recipe-template-version.git': 'https://gitserver/host/recipe-template-version',
+    'git://gitserver/qa/tests.git': 'https://gitserver/qa/tests',
     'git@github.com:Infinidat/infi.execute.git': 'https://github.com/Infinidat/infi.execute',
     'git://github.com/Infinidat/infi.execute.git': 'https://github.com/Infinidat/infi.execute',
 }
