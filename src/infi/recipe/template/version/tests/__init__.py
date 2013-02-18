@@ -7,8 +7,8 @@ from ..recipe import Recipe, GitMixin
 from os import system
 
 TRANSLATE_URLS = {
-    'git@gitserver:/host/recipe-template-version.git': 'https://gitserver/host/recipe-template-version',
-    'git://gitserver/qa/tests.git': 'https://gitserver/qa/tests',
+    'git@infinigit.infinidat.com:/host/recipe-template-version.git': 'https://infinigit.infinidat.com/host/recipe-template-version',
+    'git://infinigit.infinidat.com/qa/tests.git': 'https://infinigit.infinidat.com/qa/tests',
     'git@github.com:Infinidat/infi.execute.git': 'https://github.com/Infinidat/infi.execute',
     'git://github.com/Infinidat/infi.execute.git': 'https://github.com/Infinidat/infi.execute',
 }
@@ -63,7 +63,7 @@ class VersionInfoTestCase(unittest.TestCase):
         system('git commit --allow-empty -m empty')
         system('git commit --allow-empty -m empty')
         version = Recipe.extract_version_tag()
-        self.assertTrue('v0.0.1-3' in version)
+        self.assertTrue('v0.0.1.post3' in version)
 
     def test_vesion_tag_in_feature_branch(self):
         system('git init .')
@@ -80,7 +80,7 @@ class VersionInfoTestCase(unittest.TestCase):
         system('git commit --allow-empty -m empty')
         system('git commit --allow-empty -m empty')
         version = Recipe.extract_version_tag()
-        self.assertTrue('v0.0-feature1-4' in version)
+        self.assertIn('v0.0-feature1.post4', version)
 
     def test_vesion_tag_in_release_branch(self):
         system('git init .')
@@ -91,7 +91,7 @@ class VersionInfoTestCase(unittest.TestCase):
         system('git commit --allow-empty -m empty')
         system('git commit --allow-empty -m empty')
         version = Recipe.extract_version_tag()
-        self.assertTrue('v0.0.alpha-2' in version)
+        self.assertTrue('v0.0.alpha.post2' in version)
 
     def test_vesion_tag_in_no_branch(self):
         system('git init .')

@@ -18,9 +18,13 @@ class GitMixin(object):
         from gitpy.exceptions import GitCommandFailedException
         try:
             cmd = 'git describe --tags --match %s %s' % (match_pattern, commit)
-            return commit.repo._executeGitCommandAssertSuccess(cmd).stdout.read().strip()
+            returned = commit.repo._executeGitCommandAssertSuccess(cmd).stdout.read().strip()
         except GitCommandFailedException:
-            return commit.repo._executeGitCommandAssertSuccess(cmd.replace('*', '\*')).stdout.read().strip()
+            returned = commit.repo._executeGitCommandAssertSuccess(cmd.replace('*', '\*')).stdout.read().strip()
+        all_tags = set(tag.name for tag in commit.repo.getTags())
+        if returned not in all_tags:
+            returned = "{}.post{}.{}".format(*returned.rsplit("-", 2))
+        return returned
 
     @classmethod
     def extract_version_tag(cls):
@@ -40,7 +44,7 @@ class GitMixin(object):
             return cls.get_commit_describe(head)
         else:
             try:
-                return cls.get_commit_describe(head, 'v*%s*' % stripped_branch)
+                return cls.get_commit_describe(head, 'v*')
             except:
                 pass
             return  cls.get_commit_describe(head)
