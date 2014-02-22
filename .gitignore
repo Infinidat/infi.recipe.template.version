@@ -41,3 +41,4 @@ setup.py
 src/infi/recipe/template/version/__version__.py
 .cache
 eggs
+parts
