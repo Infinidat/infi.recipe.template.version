@@ -1,10 +1,10 @@
 __import__("pkg_resources").declare_namespace(__name__)
 
 from infi import unittest
+from infi.execute import execute_assert_success
 from mock import patch
 from contextlib import contextmanager
 from ..recipe import Recipe, GitMixin
-from os import system
 
 TRANSLATE_URLS = {
     'git@infinigit.infinidat.com:/host/recipe-template-version.git': 'https://infinigit.infinidat.com/host/recipe-template-version',
@@ -48,86 +48,86 @@ class VersionInfoTestCase(unittest.TestCase):
         self._chdir.__exit__(None, None, None)
 
     def test_vesion_tag_simple(self):
-        system('git init .')
-        system('git commit --allow-empty -m empty')
-        system('git tag -a v0.0.1 -m tag')
+        execute_assert_success('git init .'.split())
+        execute_assert_success('git commit --allow-empty -m empty'.split())
+        execute_assert_success('git tag -a v0.0.1 -m tag'.split())
         version = Recipe.extract_version_tag()
         self.assertEquals(version, 'v0.0.1')
 
     def test_vesion_tag_longer(self):
         from gitpy import LocalRepository
-        system('git init .')
-        system('git commit --allow-empty -m empty')
-        system('git tag -a v0.0.1 -m tag')
-        system('git commit --allow-empty -m empty')
-        system('git commit --allow-empty -m empty')
-        system('git commit --allow-empty -m empty')
+        execute_assert_success('git init .'.split())
+        execute_assert_success('git commit --allow-empty -m empty'.split())
+        execute_assert_success('git tag -a v0.0.1 -m tag'.split())
+        execute_assert_success('git commit --allow-empty -m empty'.split())
+        execute_assert_success('git commit --allow-empty -m empty'.split())
+        execute_assert_success('git commit --allow-empty -m empty'.split())
         version = Recipe.extract_version_tag()
         self.assertTrue('v0.0.1.post3' in version)
 
     def test_vesion_tag_in_feature_branch(self):
-        system('git init .')
-        system('git flow init -fd')
-        system('git flow release start v0.0')
-        system('git commit --allow-empty -m empty')
-        system('git tag -a v0.0.0.alpha -m tag')
-        system('git flow release finish v0.0.0')
-        system('git flow feature start feature1')
-        system('git commit --allow-empty -m empty')
-        system('git tag -a v0.0-feature1 -m tag')
-        system('git commit --allow-empty -m empty')
-        system('git commit --allow-empty -m empty')
-        system('git commit --allow-empty -m empty')
-        system('git commit --allow-empty -m empty')
+        execute_assert_success('git init .'.split())
+        execute_assert_success('git flow init -fd'.split())
+        execute_assert_success('git flow release start v0.0'.split())
+        execute_assert_success('git commit --allow-empty -m empty'.split())
+        execute_assert_success('git tag -a v0.0.0.alpha -m tag'.split())
+        execute_assert_success('git flow release finish v0.0'.split())
+        execute_assert_success('git flow feature start feature1'.split())
+        execute_assert_success('git commit --allow-empty -m empty'.split())
+        execute_assert_success('git tag -a v0.0-feature1 -m tag'.split())
+        execute_assert_success('git commit --allow-empty -m empty'.split())
+        execute_assert_success('git commit --allow-empty -m empty'.split())
+        execute_assert_success('git commit --allow-empty -m empty'.split())
+        execute_assert_success('git commit --allow-empty -m empty'.split())
         version = Recipe.extract_version_tag()
         self.assertIn('v0.0-feature1.post4', version)
 
     def test_vesion_tag_in_release_branch(self):
-        system('git init .')
-        system('git flow init -fd')
-        system('git flow release start v0.0')
-        system('git commit --allow-empty -m empty')
-        system('git tag -a v0.0.alpha -m tag')
-        system('git commit --allow-empty -m empty')
-        system('git commit --allow-empty -m empty')
+        execute_assert_success('git init .'.split())
+        execute_assert_success('git flow init -fd'.split())
+        execute_assert_success('git flow release start v0.0'.split())
+        execute_assert_success('git commit --allow-empty -m empty'.split())
+        execute_assert_success('git tag -a v0.0.alpha -m tag'.split())
+        execute_assert_success('git commit --allow-empty -m empty'.split())
+        execute_assert_success('git commit --allow-empty -m empty'.split())
         version = Recipe.extract_version_tag()
         self.assertTrue('v0.0.alpha.post2' in version)
 
     def test_vesion_tag_in_no_branch(self):
-        system('git init .')
-        system('git flow init -fd')
-        system('git flow release start v0.0')
-        system('git commit --allow-empty -m empty')
-        system('git tag -a v0.0.alpha -m tag')
-        system('git commit --allow-empty -m empty')
-        system('git commit --allow-empty -m empty')
-        system('git checkout v0.0.alpha')
+        execute_assert_success('git init .'.split())
+        execute_assert_success('git flow init -fd'.split())
+        execute_assert_success('git flow release start v0.0'.split())
+        execute_assert_success('git commit --allow-empty -m empty'.split())
+        execute_assert_success('git tag -a v0.0.alpha -m tag'.split())
+        execute_assert_success('git commit --allow-empty -m empty'.split())
+        execute_assert_success('git commit --allow-empty -m empty'.split())
+        execute_assert_success('git checkout v0.0.alpha'.split())
         version = Recipe.extract_version_tag()
         self.assertEquals(version, 'v0.0.alpha')
 
     def test_verison_tag_with_non_version_tag_outside_of_branch(self):
-        system('git init .')
-        system('git flow init -fd')
-        system('git flow release start v0.0')
-        system('git commit --allow-empty -m empty')
-        system('git tag -a v0.0.alpha -m tag')
-        system('git commit --allow-empty -m empty')
-        system('git commit --allow-empty -m empty')
-        system('git checkout HEAD^')
-        system('git tag -a foo -m foo')
+        execute_assert_success('git init .'.split())
+        execute_assert_success('git flow init -fd'.split())
+        execute_assert_success('git flow release start v0.0'.split())
+        execute_assert_success('git commit --allow-empty -m empty'.split())
+        execute_assert_success('git tag -a v0.0.alpha -m tag'.split())
+        execute_assert_success('git commit --allow-empty -m empty'.split())
+        execute_assert_success('git commit --allow-empty -m empty'.split())
+        execute_assert_success('git checkout HEAD^'.split())
+        execute_assert_success('git tag -a foo -m foo'.split())
         version = Recipe.extract_version_tag()
         self.assertTrue('v0.0.alpha' in version)
 
     def test_homepage__no_origin(self):
-        system('git init .')
-        system('git flow init -fd')
+        execute_assert_success('git init .'.split())
+        execute_assert_success('git flow init -fd'.split())
         homepage = Recipe.get_homepage()
         self.assertEquals(homepage, None)
 
     def test_homepage__github(self):
-        system('git init .')
-        system('git flow init -fd')
-        system("git remote add origin git://github.com/Infinidat/infi.recipe.template.version.git")
+        execute_assert_success('git init .'.split())
+        execute_assert_success('git flow init -fd'.split())
+        execute_assert_success("git remote add origin git://github.com/Infinidat/infi.recipe.template.version.git".split())
         homepage = Recipe.get_homepage()
         self.assertEquals(homepage, "https://github.com/Infinidat/infi.recipe.template.version")
 
@@ -140,23 +140,23 @@ class VersionInfoTestCase(unittest.TestCase):
 class HomepageRealTestCase(unittest.TestCase):
     @contextmanager
     def install_myself(self):
-        system("python setup.py develop")
+        execute_assert_success("python setup.py develop".split())
         try:
             yield
         finally:
-            system("easy_install -U infi.recipe.template.version")
+            execute_assert_success("easy_install -U infi.recipe.template.version".split())
 
     @contextmanager
     def new_repository_context(self, origin_url, expected_homepage):
         with temporary_directory_context():
-            system("projector repository init infi.test {0} short long".format(origin_url))
+            execute_assert_success("projector repository init infi.test {0} short long".format(origin_url).split())
             with open("setup.in") as fd:
                 setup_in = fd.read()
             with open("setup.in", "w") as fd:
                 fd.write(setup_in.replace("url = 'http://www.infinidat.com'",
                                           "url = ${infi.recipe.template.version:homepage}"))
             yield
-            system("projector devenv build --no-scripts")
+            execute_assert_success("projector devenv build --no-scripts".split())
             with open("setup.py") as fd:
                 actual_homepath = "url = {0},".format(None if expected_homepage is None else repr(expected_homepage))
                 self.assertIn(actual_homepath, fd.read())
@@ -185,6 +185,6 @@ class HomepageRealTestCase(unittest.TestCase):
         from shutil import copy
         with self.install_myself():
             with temporary_directory_context():
-                system("projector repository init infi.test https://github.com/Infinidat/infi.test short long")
-                system("projector devenv build --no-scripts")
+                execute_assert_success("projector repository init infi.test https://github.com/Infinidat/infi.test short long".split())
+                execute_assert_success("projector devenv build --no-scripts".split())
                 exists(abspath("./setup.py"))
