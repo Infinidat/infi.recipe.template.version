@@ -23,7 +23,7 @@ class GitMixin(object):
             returned = commit.repo._executeGitCommandAssertSuccess(cmd.replace('*', '\*')).stdout.read().strip()
         all_tags = set(tag.name for tag in commit.repo.getTags())
         if returned not in all_tags:
-            returned = "{}.post{}.{}".format(*returned.rsplit("-", 2))
+            returned = "{0}.post{1}.{2}".format(*returned.rsplit("-", 2))
         return returned
 
     @classmethod
