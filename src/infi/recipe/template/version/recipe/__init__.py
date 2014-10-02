@@ -5,6 +5,7 @@ import logging
 import os
 import re
 import stat
+import datetime
 import zc.buildout
 from infi.execute import execute_async
 
@@ -125,6 +126,7 @@ class Recipe(collective.recipe.template.Recipe, GitMixin):
         data['head_subject'] = repr(head.getSubject())
         data['head_message'] = repr(head.getMessageBody())
         data['head_hash'] = repr(head.hash)
+        data['git_commit_date'] = repr(datetime.datetime.fromtimestamp(head.getDate()).isoformat(' '))
         diff = execute_async("git diff --patch --no-color", shell=True)
         diff.wait()
         data['dirty_diff'] = repr(diff.get_stdout().replace('${', '$\\{'))
