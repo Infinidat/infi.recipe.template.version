@@ -106,6 +106,16 @@ class Recipe(collective.recipe.template.Recipe, GitMixin):
         collective.recipe.template.Recipe.__init__(self, buildout, name, options)
 
     @classmethod
+    def strip_mako_characters(cls, text):
+        replace_dict = {'${': '$\\{',
+                        '%': '%%',
+                        '<%': '<\\%',
+                        '##': '#\\#'}
+        for key in replace_dict.keys():
+            text = text.replace(key, replace_dict[key])
+        return text
+
+    @classmethod
     def update_buildout_data(cls, buildout):
         import gitpy
         repository = cls.get_repository()
@@ -123,13 +133,13 @@ class Recipe(collective.recipe.template.Recipe, GitMixin):
         data['git_local_branch'] = repr(branch.name if branch is not None else '(Not currently on any branch)')
         data['git_remote_tracking_branch'] = repr(remote.getNormalizedName() if remote is not None else '(No remote tracking)')
         data['git_remote_url'] = repr(remote.remote.url if remote is not None else '(Not remote tracking)')
-        data['head_subject'] = repr(head.getSubject())
-        data['head_message'] = repr(head.getMessageBody())
+        data['head_subject'] = repr(cls.strip_mako_characters(head.getSubject()))
+        data['head_message'] = repr(cls.strip_mako_characters(head.getMessageBody()))
         data['head_hash'] = repr(head.hash)
         data['git_commit_date'] = repr(datetime.datetime.fromtimestamp(head.getDate()).isoformat(' '))
         diff = execute_async("git diff --patch --no-color", shell=True)
         diff.wait()
-        data['dirty_diff'] = repr(diff.get_stdout().replace('${', '$\\{'))
+        data['dirty_diff'] = repr(cls.strip_mako_characters(diff.get_stdout()))
         data['homepage'] = repr(cls.get_homepage())
         if buildout.get("project").get("homepage"):
             data['homepage'] = repr(buildout.get("project").get("homepage"))
