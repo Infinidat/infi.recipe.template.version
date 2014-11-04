@@ -9,6 +9,7 @@ import datetime
 import zc.buildout
 from infi.execute import execute_async
 from infi.os_info import get_version_from_git
+from pkg_resources import resource_string
 import collective.recipe.template
 
 SECTION_NAME = "infi.recipe.template.version"
@@ -70,6 +71,8 @@ class Recipe(collective.recipe.template.Recipe, GitMixin):
 
     def __init__(self, buildout, name, options):
         Recipe.update_buildout_data(buildout)
+        if "input" not in options and "inline" not in options and "url" not in options:
+            options['inline'] = resource_string(__name__, 'default.in')
         collective.recipe.template.Recipe.__init__(self, buildout, name, options)
 
     @classmethod
