@@ -33,8 +33,6 @@ Here's an example for a buildout.cfg file that uses this recipe:
     [version.py]
     recipe = infi.recipe.template.version
     output = version.py
-    input = inline:
-        __version__ = "${infi.recipe.template.version:version}"
 
 Checking out the code
 =====================

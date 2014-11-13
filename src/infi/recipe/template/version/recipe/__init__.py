@@ -8,48 +8,16 @@ import stat
 import datetime
 import zc.buildout
 from infi.execute import execute_async
-
+from infi.os_info import get_version_from_git
+from pkg_resources import resource_string
 import collective.recipe.template
 
 SECTION_NAME = "infi.recipe.template.version"
 
 class GitMixin(object):
     @classmethod
-    def get_commit_describe(cls, commit, match_pattern='v*'):
-        from gitpy.exceptions import GitCommandFailedException
-        try:
-            cmd = 'git describe --tags --match %s %s' % (match_pattern, commit)
-            returned = commit.repo._executeGitCommandAssertSuccess(cmd).stdout.read().strip()
-        except GitCommandFailedException:
-            returned = commit.repo._executeGitCommandAssertSuccess(cmd.replace('*', '\*')).stdout.read().strip()
-        all_tags = set(tag.name for tag in commit.repo.getTags())
-        if returned not in all_tags:
-            returned = "{0}.post{1}.{2}".format(*returned.rsplit("-", 2))
-        return returned
-
-    @classmethod
     def extract_version_tag(cls):
-        from gitpy import LocalRepository
-        from os import curdir, path
-        repository = LocalRepository(curdir)
-        branch = repository.getCurrentBranch()
-        head = repository.getHead()
-        if branch is None:
-            return cls.get_commit_describe(head)
-        current_branch = branch.name
-        stripped_branch = current_branch.split('/')[0]
-        if current_branch.startswith('release/') or current_branch.startswith('support/') or \
-                                                    current_branch.startswith('hotfix/'):
-            return cls.get_commit_describe(head)
-        if 'master' in stripped_branch:
-            return cls.get_commit_describe(head)
-        else:
-            try:
-                return cls.get_commit_describe(head, 'v*')
-            except:
-                pass
-            return  cls.get_commit_describe(head)
-        pass
+        return get_version_from_git()
 
     @classmethod
     def get_origin(cls, repository):
@@ -103,6 +71,8 @@ class Recipe(collective.recipe.template.Recipe, GitMixin):
 
     def __init__(self, buildout, name, options):
         Recipe.update_buildout_data(buildout)
+        if "input" not in options and "inline" not in options and "url" not in options:
+            options['inline'] = resource_string(__name__, 'default.in')
         collective.recipe.template.Recipe.__init__(self, buildout, name, options)
 
     @classmethod
