@@ -8,3 +8,4 @@ __git_head_hash__ = ${infi.recipe.template.version:head_hash}
 __git_head_subject__ = ${infi.recipe.template.version:head_subject}
 __git_head_message__ = ${infi.recipe.template.version:head_message}
 __git_dirty_diff__ = ${infi.recipe.template.version:dirty_diff}
+__git_commit_date__ = ${infi.recipe.template.version:git_commit_date}
