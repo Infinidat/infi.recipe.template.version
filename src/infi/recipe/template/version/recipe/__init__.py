@@ -70,10 +70,19 @@ class Recipe(collective.recipe.template.Recipe, GitMixin):
     author_email = <git head commit author email> """
 
     def __init__(self, buildout, name, options):
+        # the recipe builds the result strings on __init__,
+        # so we need to add the stuff we need to the buildout and options
+        # but we don't want those things to be written into .installed.cfg, because they don't exist in buildout.cfg
+        # and that can cause errors later on, such as:
+        # Error: The referenced section, 'infi.recipe.template.version', was not defined.
         Recipe.update_buildout_data(buildout)
         if "input" not in options and "inline" not in options and "url" not in options:
-            options['inline'] = resource_string(__name__, 'default.in')
-        collective.recipe.template.Recipe.__init__(self, buildout, name, options)
+            options._data['inline'] = resource_string(__name__, 'default.in')
+            collective.recipe.template.Recipe.__init__(self, buildout, name, options)
+            options._data.pop('inline')
+            buildout._data.pop(SECTION_NAME)
+        else:
+            collective.recipe.template.Recipe.__init__(self, buildout, name, options)
 
     @classmethod
     def strip_mako_characters(cls, text):
