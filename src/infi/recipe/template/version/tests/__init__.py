@@ -138,13 +138,9 @@ class VersionInfoTestCase(unittest.TestCase):
         self.assertEquals(actual, expected)
 
 class HomepageRealTestCase(unittest.TestCase):
-    @contextmanager
-    def install_myself(self):
+    @classmethod
+    def setUpClass(cls):
         execute_assert_success("python setup.py develop".split())
-        try:
-            yield
-        finally:
-            execute_assert_success("easy_install -U infi.recipe.template.version".split())
 
     @contextmanager
     def new_repository_context(self, origin_url, expected_homepage):
@@ -162,29 +158,25 @@ class HomepageRealTestCase(unittest.TestCase):
                 self.assertIn(actual_homepath, fd.read())
 
     def test_homepage__github(self):
-        with self.install_myself():
-            with self.new_repository_context("git://github.com/Infinidat/infi.test.git",
-                                             'https://github.com/Infinidat/infi.test'):
-                pass
+        with self.new_repository_context("git://github.com/Infinidat/infi.test.git",
+                                         'https://github.com/Infinidat/infi.test'):
+            pass
 
     def test_homepage__invalid(self):
-        with self.install_myself():
-            with self.new_repository_context("https://github.com/Infinidat/infi.test", None):
-                pass
+        with self.new_repository_context("https://github.com/Infinidat/infi.test", None):
+            pass
 
     def test_homepage__overriden_in_buildout(self):
-        with self.install_myself():
-            with self.new_repository_context("https://github.com/Infinidat/infi.test", "http://google.com"):
-                with open("buildout.cfg") as fd:
-                    buildout_cfg = fd.read()
-                with open("buildout.cfg", 'w') as fd:
-                    fd.write(buildout_cfg.replace("[project]", "[project]\nhomepage = http://google.com"))
+        with self.new_repository_context("https://github.com/Infinidat/infi.test", "http://google.com"):
+            with open("buildout.cfg") as fd:
+                buildout_cfg = fd.read()
+            with open("buildout.cfg", 'w') as fd:
+                fd.write(buildout_cfg.replace("[project]", "[project]\nhomepage = http://google.com"))
 
     def test_homepage__old_setup_in(self):
         from os.path import abspath, dirname, exists
         from shutil import copy
-        with self.install_myself():
-            with temporary_directory_context():
-                execute_assert_success("projector repository init infi.test https://github.com/Infinidat/infi.test short long".split())
-                execute_assert_success("projector devenv build --no-scripts".split())
-                exists(abspath("./setup.py"))
+        with temporary_directory_context():
+            execute_assert_success("projector repository init infi.test https://github.com/Infinidat/infi.test short long".split())
+            execute_assert_success("projector devenv build --no-scripts".split())
+            exists(abspath("./setup.py"))
