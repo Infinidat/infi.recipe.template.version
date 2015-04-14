@@ -46,7 +46,7 @@ class GitMixin(object):
     def translate_clone_url_to_homepage(cls, url):
         from re import match
         URL = r"(?P<protocol>(?:git@|git:\/\/))(?P<origin_fqdn>[a-zA-Z0-9_\-.]+)[:\/]{1,2}(?P<repository_uri>[a-zA-Z0-9_\-\.\/]+)(?:.git)+$"
-        if not match(URL, url):
+        if url is None or not match(URL, url):
             return None
         groupdict = match(URL, url).groupdict()
         protocol = cls.guess_origin_home_protocol(groupdict['origin_fqdn'])
