@@ -52,7 +52,7 @@ class VersionInfoTestCase(unittest.TestCase):
         execute_assert_success('git commit --allow-empty -m empty'.split())
         execute_assert_success('git tag -a v0.0.1 -m tag'.split())
         version = Recipe.extract_version_tag()
-        self.assertEquals(version, 'v0.0.1')
+        self.assertEqual(version, 'v0.0.1')
 
     def test_vesion_tag_longer(self):
         from gitpy import LocalRepository
@@ -103,7 +103,7 @@ class VersionInfoTestCase(unittest.TestCase):
         execute_assert_success('git commit --allow-empty -m empty'.split())
         execute_assert_success('git checkout v0.0.alpha'.split())
         version = Recipe.extract_version_tag()
-        self.assertEquals(version, 'v0.0.alpha')
+        self.assertEqual(version, 'v0.0.alpha')
 
     def test_verison_tag_with_non_version_tag_outside_of_branch(self):
         execute_assert_success('git init .'.split())
@@ -122,20 +122,20 @@ class VersionInfoTestCase(unittest.TestCase):
         execute_assert_success('git init .'.split())
         execute_assert_success('git flow init -fd'.split())
         homepage = Recipe.get_homepage()
-        self.assertEquals(homepage, None)
+        self.assertEqual(homepage, None)
 
     def test_homepage__github(self):
         execute_assert_success('git init .'.split())
         execute_assert_success('git flow init -fd'.split())
         execute_assert_success("git remote add origin git://github.com/Infinidat/infi.recipe.template.version.git".split())
         homepage = Recipe.get_homepage()
-        self.assertEquals(homepage, "https://github.com/Infinidat/infi.recipe.template.version")
+        self.assertEqual(homepage, "https://github.com/Infinidat/infi.recipe.template.version")
 
     @unittest.parameters.iterate("in_out_tuple", TRANSLATE_URLS.items())
     def test_url_translation(self, in_out_tuple):
         subject, expected = in_out_tuple
         actual = GitMixin.translate_clone_url_to_homepage(subject)
-        self.assertEquals(actual, expected)
+        self.assertEqual(actual, expected)
 
 class HomepageRealTestCase(unittest.TestCase):
     @classmethod

@@ -29,12 +29,15 @@ class GitMixin(object):
 
     @classmethod
     def guess_origin_home_protocol(cls, fqdn):
-        from urllib import urlretrieve
+        try:
+            from urllib.request import urlretrieve
+        except ImportError:     # Python 3
+            from urllib import urlretrieve
         from ssl import SSLError
         try:
             if urlretrieve("https://{0}".format(fqdn)):
                 return 'https'
-        except IOError, error:
+        except IOError as error:
             if hasattr(error, 'args') and len(error.args)>=2 and isinstance(error.args[1], SSLError):
                 # Python-2.7.9 onwards checks for ssl certificates by default
                 return 'https'
