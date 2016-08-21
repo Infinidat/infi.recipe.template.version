@@ -29,12 +29,15 @@ class GitMixin(object):
 
     @classmethod
     def guess_origin_home_protocol(cls, fqdn):
-        from urllib import urlretrieve
+        try:
+            from urllib.request import urlretrieve
+        except ImportError:     # Python 3
+            from urllib import urlretrieve
         from ssl import SSLError
         try:
             if urlretrieve("https://{0}".format(fqdn)):
                 return 'https'
-        except IOError, error:
+        except IOError as error:
             if hasattr(error, 'args') and len(error.args)>=2 and isinstance(error.args[1], SSLError):
                 # Python-2.7.9 onwards checks for ssl certificates by default
                 return 'https'
@@ -83,7 +86,7 @@ class Recipe(collective.recipe.template.Recipe, GitMixin):
         # Error: The referenced section, 'infi.recipe.template.version', was not defined.
         Recipe.update_buildout_data(buildout)
         if "input" not in options and "inline" not in options and "url" not in options:
-            options._data['inline'] = resource_string(__name__, 'default.in')
+            options._data['inline'] = resource_string(__name__, 'default.in').decode("ascii")
             collective.recipe.template.Recipe.__init__(self, buildout, name, options)
             options._data.pop('inline')
             buildout._data.pop(SECTION_NAME)
@@ -124,7 +127,7 @@ class Recipe(collective.recipe.template.Recipe, GitMixin):
         data['git_commit_date'] = repr(datetime.datetime.fromtimestamp(head.getDate()).isoformat(' '))
         diff = execute_async("git diff --patch --no-color", shell=True)
         diff.wait()
-        data['dirty_diff'] = repr(cls.strip_mako_characters(diff.get_stdout()))
+        data['dirty_diff'] = repr(cls.strip_mako_characters(diff.get_stdout().decode("ascii")))
         data['homepage'] = repr(cls.get_homepage())
         if buildout.get("project").get("homepage"):
             data['homepage'] = repr(buildout.get("project").get("homepage"))
