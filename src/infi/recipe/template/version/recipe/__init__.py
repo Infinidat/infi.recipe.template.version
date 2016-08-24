@@ -38,7 +38,7 @@ class GitMixin(object):
             if urlretrieve("https://{0}".format(fqdn)):
                 return 'https'
         except IOError as error:
-            if hasattr(error, 'args') and len(error.args)>=2 and isinstance(error.args[1], SSLError):
+            if hasattr(error, 'args') and any(isinstance(arg, SSLError) for arg in error.args):
                 # Python-2.7.9 onwards checks for ssl certificates by default
                 return 'https'
             return 'http'

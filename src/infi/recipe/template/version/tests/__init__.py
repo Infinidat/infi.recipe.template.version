@@ -1,5 +1,6 @@
 __import__("pkg_resources").declare_namespace(__name__)
 
+import sys
 from infi import unittest
 from infi.execute import execute_assert_success
 from mock import patch
@@ -67,12 +68,8 @@ class VersionInfoTestCase(unittest.TestCase):
 
     def test_vesion_tag_in_feature_branch(self):
         execute_assert_success('git init .'.split())
-        execute_assert_success('git flow init -fd'.split())
-        execute_assert_success('git flow release start v0.0'.split())
         execute_assert_success('git commit --allow-empty -m empty'.split())
         execute_assert_success('git tag -a v0.0.0.alpha -m tag'.split())
-        execute_assert_success('git flow release finish v0.0'.split())
-        execute_assert_success('git flow feature start feature1'.split())
         execute_assert_success('git commit --allow-empty -m empty'.split())
         execute_assert_success('git tag -a v0.0-feature1 -m tag'.split())
         execute_assert_success('git commit --allow-empty -m empty'.split())
@@ -84,8 +81,6 @@ class VersionInfoTestCase(unittest.TestCase):
 
     def test_vesion_tag_in_release_branch(self):
         execute_assert_success('git init .'.split())
-        execute_assert_success('git flow init -fd'.split())
-        execute_assert_success('git flow release start v0.0'.split())
         execute_assert_success('git commit --allow-empty -m empty'.split())
         execute_assert_success('git tag -a v0.0.alpha -m tag'.split())
         execute_assert_success('git commit --allow-empty -m empty'.split())
@@ -95,8 +90,6 @@ class VersionInfoTestCase(unittest.TestCase):
 
     def test_vesion_tag_in_no_branch(self):
         execute_assert_success('git init .'.split())
-        execute_assert_success('git flow init -fd'.split())
-        execute_assert_success('git flow release start v0.0'.split())
         execute_assert_success('git commit --allow-empty -m empty'.split())
         execute_assert_success('git tag -a v0.0.alpha -m tag'.split())
         execute_assert_success('git commit --allow-empty -m empty'.split())
@@ -107,8 +100,6 @@ class VersionInfoTestCase(unittest.TestCase):
 
     def test_verison_tag_with_non_version_tag_outside_of_branch(self):
         execute_assert_success('git init .'.split())
-        execute_assert_success('git flow init -fd'.split())
-        execute_assert_success('git flow release start v0.0'.split())
         execute_assert_success('git commit --allow-empty -m empty'.split())
         execute_assert_success('git tag -a v0.0.alpha -m tag'.split())
         execute_assert_success('git commit --allow-empty -m empty'.split())
@@ -120,13 +111,11 @@ class VersionInfoTestCase(unittest.TestCase):
 
     def test_homepage__no_origin(self):
         execute_assert_success('git init .'.split())
-        execute_assert_success('git flow init -fd'.split())
         homepage = Recipe.get_homepage()
         self.assertEqual(homepage, None)
 
     def test_homepage__github(self):
         execute_assert_success('git init .'.split())
-        execute_assert_success('git flow init -fd'.split())
         execute_assert_success("git remote add origin git://github.com/Infinidat/infi.recipe.template.version.git".split())
         homepage = Recipe.get_homepage()
         self.assertEqual(homepage, "https://github.com/Infinidat/infi.recipe.template.version")
@@ -140,7 +129,7 @@ class VersionInfoTestCase(unittest.TestCase):
 class HomepageRealTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        execute_assert_success("python setup.py develop".split())
+        execute_assert_success("{0} setup.py develop".format(sys.executable).split())
 
     @contextmanager
     def new_repository_context(self, origin_url, expected_homepage):
