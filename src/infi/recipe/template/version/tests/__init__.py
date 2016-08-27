@@ -1,6 +1,5 @@
 __import__("pkg_resources").declare_namespace(__name__)
 
-import sys
 from infi import unittest
 from infi.execute import execute_assert_success
 from mock import patch
@@ -129,7 +128,7 @@ class VersionInfoTestCase(unittest.TestCase):
 class HomepageRealTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        execute_assert_success("{0} setup.py develop".format(sys.executable).split())
+        execute_assert_success("python setup.py develop".split())
 
     @contextmanager
     def new_repository_context(self, origin_url, expected_homepage):
