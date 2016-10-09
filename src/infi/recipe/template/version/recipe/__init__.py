@@ -127,7 +127,7 @@ class Recipe(collective.recipe.template.Recipe, GitMixin):
         data['git_commit_date'] = repr(datetime.datetime.fromtimestamp(head.getDate()).isoformat(' '))
         diff = execute_async("git diff --patch --no-color", shell=True)
         diff.wait()
-        data['dirty_diff'] = repr(cls.strip_mako_characters(diff.get_stdout().decode("ascii")))
+        data['dirty_diff'] = repr(cls.strip_mako_characters(diff.get_stdout().decode("utf-8")))
         data['homepage'] = repr(cls.get_homepage())
         if buildout.get("project").get("homepage"):
             data['homepage'] = repr(buildout.get("project").get("homepage"))
