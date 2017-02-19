@@ -7,8 +7,8 @@ from contextlib import contextmanager
 from ..recipe import Recipe, GitMixin
 
 TRANSLATE_URLS = {
-    'git@infinigit.infinidat.com:/host/recipe-template-version.git': 'http://infinigit.infinidat.com/host/recipe-template-version',
-    'git://infinigit.infinidat.com/qa/tests.git': 'http://infinigit.infinidat.com/qa/tests',
+    'git@infinigit.infinidat.com:/host/recipe-template-version.git': 'https://infinigit.infinidat.com/host/recipe-template-version',
+    'git://infinigit.infinidat.com/qa/tests.git': 'https://infinigit.infinidat.com/qa/tests',
     'git@github.com:Infinidat/infi.execute.git': 'https://github.com/Infinidat/infi.execute',
     'git://github.com/Infinidat/infi.execute.git': 'https://github.com/Infinidat/infi.execute',
 }
