@@ -55,7 +55,7 @@ class VersionInfoTestCase(unittest.TestCase):
         self.assertEqual(version, 'v0.0.1')
 
     def test_vesion_tag_longer(self):
-        from gitpy import LocalRepository
+        from infi.gitpy import LocalRepository
         execute_assert_success('git init .'.split())
         execute_assert_success('git commit --allow-empty -m empty'.split())
         execute_assert_success('git tag -a v0.0.1 -m tag'.split())

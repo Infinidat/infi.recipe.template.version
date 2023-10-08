@@ -21,7 +21,7 @@ class GitMixin(object):
 
     @classmethod
     def get_origin(cls, repository):
-        from gitpy.exceptions import NonexistentRefException
+        from infi.gitpy.exceptions import NonexistentRefException
         try:
             return repository.getRemoteByName("origin")
         except NonexistentRefException:
@@ -66,9 +66,9 @@ class GitMixin(object):
 
     @classmethod
     def get_repository(cls):
-        import gitpy
+        from infi.gitpy import LocalRepository
         from os import curdir
-        repository = gitpy.LocalRepository(curdir)
+        repository = LocalRepository(curdir)
         return repository
 
 class Recipe(collective.recipe.template.Recipe, GitMixin):
@@ -105,7 +105,7 @@ class Recipe(collective.recipe.template.Recipe, GitMixin):
 
     @classmethod
     def update_buildout_data(cls, buildout):
-        import gitpy
+        import infi.gitpy as gitpy
         repository = cls.get_repository()
         branch = repository.getCurrentBranch()
         try:
